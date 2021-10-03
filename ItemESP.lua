@@ -1,4 +1,5 @@
 local P = game:GetService("Workspace").Interactables
+local EP = game:GetService("Workspace").activeHostiles
 local Rand = math.random(10000, 1000000)
 
 local UIS = game:GetService("UserInputService")
@@ -7,7 +8,7 @@ function GetDist(P1, P2)
 	return  (P1.Position - P2.Position).Magnitude
 end
 
-function CreateESP(Ins, C)
+function CreateESP(Ins, C, N)
 	local BillboardGui = Instance.new("BillboardGui")
 	local Divider = Instance.new("Frame")
 	local Name = Instance.new("TextLabel")
@@ -37,7 +38,7 @@ function CreateESP(Ins, C)
 	Name.Position = UDim2.new(0, 0, 0.100000001, 0)
 	Name.Size = UDim2.new(1, 0, 0.300000012, 0)
 	Name.Font = Enum.Font.Gotham
-	Name.Text = Ins.Parent.Name
+	Name.Text = N
 	Name.TextColor3 = C
 	Name.TextScaled = true
 	Name.TextSize = 14.000
@@ -81,30 +82,41 @@ local function round(n)
 end
 
 function Refresh()
-		ClearESP()
-		local Crates = {}
+	ClearESP()
+	local Crates = {}
 	local Ammo = {}
 	local Meds = {}
-		for _, v in pairs(P:GetChildren()) do
-			if v.Name == "Crate" then
-				table.insert(Crates, v)
-			end
-			if string.split(v.Name, " ")[2] == "Ammo" then
-				table.insert(Ammo, v)
-			end
+	
+	local Enemies = {}
+	
+	for _, v in pairs(P:GetChildren()) do
+		if v.Name == "Crate" then
+			table.insert(Crates, v)
+		end
+		if string.split(v.Name, " ")[2] == "Ammo" then
+			table.insert(Ammo, v)
+		end
 		if v.Name == "Medical Cabinet" then
 			table.insert(Meds, v)
 		end
-		end
-
-		for _, v in pairs(Crates) do
-		CreateESP(v:FindFirstChild("Interact"), Color3.fromRGB(255, 255, 255))
-		end
-		for _, v in pairs(Ammo) do
-			CreateESP(v:FindFirstChild("Interact"), Color3.fromRGB(255, 255, 127))
+	end
+	
+	for _, v in pairs(EP:GetChildren()) do
+		table.insert(Enemies, v)
+	end
+	
+	for _, v in pairs(Enemies) do
+		CreateESP(v:FindFirstChild("Head"), Color3.fromRGB(255, 0, 0), v.ai_type.Value)
+	end
+	
+	for _, v in pairs(Crates) do
+		CreateESP(v:FindFirstChild("Interact"), Color3.fromRGB(255, 255, 255), v.Name)
+	end
+	for _, v in pairs(Ammo) do
+		CreateESP(v:FindFirstChild("Interact"), Color3.fromRGB(255, 255, 127), v.Name)
 	end
 	for _, v in pairs(Meds) do
-		CreateESP(v:FindFirstChild("Interact"), Color3.fromRGB(0, 170, 255))
+		CreateESP(v:FindFirstChild("Interact"), Color3.fromRGB(0, 170, 255), v.Name)
 	end
 end
 
