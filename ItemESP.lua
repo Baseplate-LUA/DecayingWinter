@@ -109,7 +109,7 @@ function Refresh()
 end
 
 UIS.InputBegan:Connect(function(Input)
-	if Input.KeyCode == Enum.KeyCode.F then
+	if Input.KeyCode == Enum.KeyCode.G then
 		Refresh()
 	end
 end)
